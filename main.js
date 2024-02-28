@@ -1,135 +1,266 @@
-
-// subtract
-const subtract = function(num1, num2) {
-    // For UI
-    let firstOperand = 0;
-    let secondOperand = 0;
-    let operator = '';
-
-	return num1 - num2;
-};
-
-// multiply
-const multiply = function(num1, num2) {
-    // For UI
-    let firstOperand = 0;
-    let secondOperand = 0;
-    let operator = '';
-
-    return num1 * num2;
-};
-
-// divide
-const divide = function(num1, num2) {
-    // For UI
-    let firstOperand = 0;
-    let secondOperand = 0;
-    let operator = '';
-
-    return num1 / num2;
-};
-
-// const testInputArr = [];
 let clickValue = [];
-let firstNumber = 0;
-let secondNumber = 0;
+let firstNumber;
 let operatorValue = '';
+let secondNumber = '';
+let equalValue = 0;
 
-const handleClick = function(event){
-    const buttonValue = event.target.value;
+const keysDigit = document.querySelectorAll('.key.digit');
+keysDigit.forEach(keyDigit => {
+    keyDigit.addEventListener('click', () => {
+        handleDigit(keyDigit.value)
+        populateDisplay();
+    })
+})
 
-    testInputArr.push(buttonValue);
-    // inputStorage(digitValue);
-    // console.table(testInputArr);
+const handleDigit = function(value) {
+    if (typeof firstNumber === 'undefined' || firstNumber === '0' || firstNumber === 0){
+        firstNumber = '';
+    } 
 
-    // const firstNumber = Number(testInputArr[0]);
-    // const secondNumber = Number(testInputArr[2]);
-    // operate(firstNumber, secondNumber, testInputArr[1]); // ???
+    if (typeof secondNumber === 'undefined' || secondNumber === '0'){
+        secondNumber = '';
+    } 
+
+    if (operatorValue === '+') {
+        secondNumber += value;
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '0'){
+            firstNumber = '';
+        }
+
+    } else if (operatorValue === '-') {
+        secondNumber += value;
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '0'){
+            firstNumber = '';
+        }
+
+    } else if (operatorValue === '*') {
+        secondNumber += value;
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '0'){
+            firstNumber = '';
+        }
+    
+    } else if (operatorValue === '/') {
+        secondNumber += value;
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '0'){
+            firstNumber = '';
+        }
+
+    } else if (operatorValue === ''){
+        firstNumber += value;
+    }
 }
 
-// const inputStorage = function(){
-//     // let value = handleClick();
-//     // return value;
-// }
+const operatorPlus = document.querySelector('.add');
+const operatorMinus = document.querySelector('.subtract');
+const operatorMultiply = document.querySelector('.multiply');
+const operatorSubtract = document.querySelector('.subtract');
 
-// console.table(testInputArr);
-
-const firstDigit = document.querySelector('.one')
-firstDigit.addEventListener('click', () => {
-    // handleClick;
-    clickValue.push(firstDigit.value);
-    // console.log(clickValue);
-    populateDisplay();
+const keysOperator = document.querySelectorAll('.key.operator');
+keysOperator.forEach(keyOperator => {
+    keyOperator.addEventListener('click', () => {
+        let valuePlus = operatorPlus.value;
+        let valueMinus = operatorMinus.value;
+        let valueMultiply = operatorMultiply.value;
+        let valueSubtract = operatorSubtract.value;
+        
+        handleOperator(valuePlus, valueMinus, valueMultiply, valueSubtract)
+        operatorValue = keyOperator.value;
+    })
 })
 
+const handleOperator = function(valuePlus, valueMinus, valueMultiply, valueSubtract) {
+    let firstNumberInput = Number(firstNumber);
+    let secondNumberInput = Number(secondNumber);
+    let equalPlus = 0;
+    let equalMinus = 0;
+    let equalMultiply = 0;
+    let equalSubtract = 0;
 
-const operatorPlus = document.querySelector('.plus')
-operatorPlus.addEventListener('click', () => {
-    // handleClick;
-    clickValue.push(operatorPlus.value);
-    // console.log(clickValue);
-    populateDisplay();
-})
+    if (isNaN(firstNumberInput)) {
+        firstNumberInput = 0;
+    }
 
-const secondDigit = document.querySelector('.two')
-secondDigit.addEventListener('click', () => {
-    // handleClick;
-    clickValue.push(secondDigit.value);
-    // console.log(clickValue);
-    populateDisplay();
-})
+    if (operatorValue === '') {
+        operatorValue = operatorPlus.value;
+    }
+
+    if (operatorValue === '+') {
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '') {
+            firstNumber = equalValue;
+        }
+
+        equalPlus = operate(firstNumberInput, secondNumberInput, operatorValue);
+        equalValue = equalPlus;;
+
+        if (firstNumber && operatorValue && secondNumber) {
+            resetValue();
+            operatorValue = valuePlus.value;
+            firstNumber = equalValue;
+        }
+    }
+
+    if (operatorValue === '-') {
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '') {
+            firstNumber = equalValue;
+        }
+
+        equalMinus = operate(firstNumberInput, secondNumberInput, operatorValue);
+        equalValue = equalMinus;
+
+        if (firstNumber && operatorValue && secondNumber) {
+            resetValue();
+            operatorValue = valueMinus.value;
+            firstNumber = equalValue;
+        }
+    }
+
+    if (operatorValue === '*') {
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '') {
+            firstNumber = equalValue;
+        }
+
+        equalMultiply = operate(firstNumberInput, secondNumberInput, operatorValue);
+        equalValue = equalMultiply;
+
+        if (firstNumber && operatorValue && secondNumber) {
+            resetValue();
+            operatorValue = valueMultiply.value;
+            firstNumber = equalValue;
+        }
+    }
+    
+    if (operatorValue === '/') {
+
+        if (typeof firstNumber === 'undefined' || firstNumber === '') {
+            firstNumber = equalValue;
+        }
+
+        equalSubtract = operate(firstNumberInput, secondNumberInput, operatorValue);
+        equalValue = equalSubtract;
+
+        if (firstNumber && operatorValue && secondNumber) {
+            resetValue();
+            operatorValue = valueSubtract.value;
+            firstNumber = equalValue;
+        }
+    }
+}
 
 const display = document.querySelector('#display');
-const populateDisplay = function() {
-    // Access the stored value and update the DOM
-    display.textContent = clickValue;
-    
+const populateDisplay = function() {  
+    if (operatorValue === ''){
+        display.textContent = firstNumber;
+    } else if (operatorValue === '+') {
+        display.textContent = secondNumber;
+    } else if (operatorValue === '-') {
+        display.textContent = secondNumber;
+    } else if (operatorValue === '*') {
+        display.textContent = secondNumber;
+    } else if (operatorValue === '/') {
+        display.textContent = secondNumber;
+    } else if (equalValue) {
+        display.textContent = equalValue;
+    } else if (operatorValue === '=') {
+        display.textContent = equalValue;
+    } else  {
+        display.textContent = secondNumber;
+    } 
 }
 
 const equal = document.querySelector('.equal');
 equal.addEventListener('click', () => {
-    firstNumber = Number(clickValue[0])
-    console.log(firstNumber);
-    operatorValue = clickValue[1]
-    console.log(operatorValue);
-    secondNumber = Number(clickValue[2])
-    console.log(secondNumber);
-    // operate
-    operate(firstNumber, secondNumber, operatorValue)
+    let firstNumberEqual = Number(firstNumber);
+    let secondNumberEqual = Number(secondNumber);
+    let operatorEqual = operatorValue;
+
+    equalValue = operate(firstNumberEqual, secondNumberEqual, operatorEqual);
+
+    operatorValue = equal.value;
+    resetValue();
+
+    if (firstNumber === '') {
+        firstNumber = equalValue;
+    }
+
 })
+
+const resetValue = function() {
+    firstNumber = '';
+    operatorValue = '';
+    secondNumber = '';
+}
 
 // add
 const add = function(num1, num2) {
-    // For UI
-    // let firstOperand = 0;
-    // let secondOperand = 0;
-    // let operator = '';
-
-	let result = num1 + num2;
+  	let result = num1 + num2;
     display.textContent = result;
+
+    return result;
 };
 
+// subtract
+const subtract = function(num1, num2) {
+    let result = num1 - num2;
+    display.textContent = result;
 
-// const inputButtons = ['12', '+', '4']
-// const firstNumber = Number(inputButtons[0])
-// const secondNumber = Number(inputButtons[2])
+    return result;
+};
 
-// const inputButtons = ['12', '-', '4']
-// const firstNumber = Number(inputButtons[0])
-// const secondNumber = Number(inputButtons[2])
+// multiply
+const multiply = function(num1, num2) {
+    let result = num1 * num2;
+    display.textContent = result;
 
-// const inputButtons = ['12', '*', '4']
-// const firstNumber = Number(inputButtons[0])
-// const secondNumber = Number(inputButtons[2])
+    return result;
+};
 
-// const inputButtons = ['12', '/', '4']
-// const firstNumber = Number(inputButtons[0])
-// const secondNumber = Number(inputButtons[2])
+// divide
+const divide = function(num1, num2) {
+    if (num2 === 0) {
+        display.textContent = 'You cannot divide by 0';
+        return 0;
+    } 
+    
+    let result = num1 / num2;
+
+    if (isFloat(result)) {
+        display.textContent = result.toFixed(2);  
+    } else {
+        display.textContent = result;
+    }
+
+    return result;
+
+};
+
+function isFloat(number) {
+    return !Number.isInteger(number);
+}
+
+const clearBtn = document.querySelector('.all-clear');
+clearBtn.addEventListener('click', () => {
+    resetValue();
+    equalValue = 0;
+
+    display.textContent = 0;
+
+    console.log('first number: ', firstNumber);
+    console.log('operator: ', operatorValue);
+    console.log('second number: ', secondNumber);
+    console.log('equal value: ', equalValue);
+})
 
 const operate = function(num1, num2, operator) {
     // Condition for calling above operations
     if (operator === '+') {
-        add(num1, num2)
+        return add(num1, num2)
     }
     
     if (operator === '-') {
@@ -143,92 +274,8 @@ const operate = function(num1, num2, operator) {
     if (operator === '/') {
         return divide(num1, num2)
     }
+    
+    if (operator === '=' || operator === '') {
+        return firstNumber
+    }
 }
-
-// console.log(operate(firstNumber, secondNumber, inputButtons[1]));
-
-// // Variable for storing display value
-// let displayValue = '';
-// let first = '';
-// let second = '';
-
-// // Function for populate the display
-// const digits = document.querySelectorAll('.digit');
-
-// digits.forEach(digit => {
-//     digit.addEventListener('click', () => {
-//         // console.log(typeof digitValue);
-//         // console.log(digitValue);
-//         // digitHandler(digit.value)
-//         populateDisplay(digit.value)
-//     })
-// })
-
-
-// const populateDisplay = function(value, operator){
-//     displayValue += value
-//     const display = document.querySelector('#display');
-//     display.textContent = displayValue;
-
-    
-//     // if (first !== '') {
-//     //     secondNumber(displayValue)
-//     //     display.textContent = first;
-//     // }
-    
-//     // firstNumber(displayValue)
-
-//     // const plus = document.querySelector('.plus');
-//     // plus.addEventListener('click', () => {
-//     // })
-
-//     // if (operator === '+') {
-        
-//     // }
-
-// }
-
-// // Store first number and second number
-// const plus = document.querySelector('.plus');
-// // console.log(plus.value);
-// // console.log(plus);
-// plus.addEventListener('click', () => {
-//     // plus.value = '+';
-//     handleClick(plus.value);
-// })
-
-// const plusHandler = function(plusValue){
-//     // console.log(plusValue);
-//     return "this is" + plusValue
-// }
-
-// plusHandler()
-
-// const plusCheck = function(value) {
-//     // console.log(value);
-//     if (value === 1) {
-//         display.textContent = 'test';
-//     }
-// }
-
-// console.log(plusClick);
-
-// const firstNumber = function(value){
-    
-
-//     first = value;
-//     // console.log(first);
-// }
-
-// const secondNumber = function(value){
-    
-
-//     second = value;
-//     console.log(second);
-    
-// }
-
-// Utilize the operator that the user select
-
-
-// call operate() when '=' is pressed
